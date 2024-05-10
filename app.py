@@ -49,10 +49,13 @@ def post_example():
 
             response = model.generate_content(text)
 
+            print(response.text)
+
             return response.text
 
         except Exception as e:
-            return e
+            print("Deu ruim!")
+            return e.with_traceback
 
 
 if __name__ == "__main__":
