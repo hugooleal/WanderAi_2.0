@@ -38,22 +38,14 @@ model = genai.GenerativeModel(
 def post_example():
     if request.method == "POST":
         # Access POST data from the request
-        msgTESTE = request.get_json()
-        print(msgTESTE)
-        print(msgTESTE["prompt"])
-
-        msg = {
-            "prompt": f"você agora é um agente de viagens e possui vasta experiência sobre todos os países do mundo. Crie um roteiro de viagens para mim considerando as seguintes informações:\nCidade: [Cidade informada no input field 1]\nPeríodo: [Período informado no input field 2]\nTipos de atividade que mais gosto: [Tipos de atividade informadas no input field 3]\nBudget da viagem: [Informação selecionada no input field 4]\nNão precisa categorizar os dias por tipos de atividade.\nLeve em consideração a proximidade de cada atividade para montar os dias.\nSeja específico e detalhado sobre cada atividade sugerida e dê dicas importantes, como por exemplo, se há necessidade de reserva antecipada para a atividade sugerida.\nSugira restaurantes.\nDê dicas sobre o melhor meio de se locomover na cidade.\nPor fim, informe a média do custo total da viagem com base no roteiro sugerido.\nTenha em mente que eu moro no Brasil."
-        }
-        print("Prompt: ", msg)
+        rawPrompt = request.get_json()["prompt"]
+        formattedPrompt = f"{rawPrompt}"
+        print("Prompt:", formattedPrompt)
 
         # Trying to parse message
         try:
 
-            print("There is a text")
-            text = msg["prompt"]  # This gets the prompt from the msg
-
-            response = model.generate_content(text)
+            response = model.generate_content(formattedPrompt)
 
             print(response.text)
 
