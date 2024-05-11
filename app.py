@@ -1,6 +1,8 @@
 from flask import Flask, request
 from flask_cors import CORS
 import google.generativeai as genai
+import pandas as pd
+import numpy as np
 
 app = Flask(__name__)
 CORS(app)
@@ -9,12 +11,26 @@ CORS(app)
 genai.configure(api_key="AIzaSyACn0ut4jxm-Kp9N5zcuOYQrTRJe6Z6aPQ")
 
 # Set up the model
-generation_config = {
-    "temperature": 0.5,
-    "top_p": 0.95,
-    "top_k": 0,
-    "max_output_tokens": 8192,
-}
+configsList = [
+    {
+        "temperature": 0.5,
+        "top_p": 0.95,
+        "top_k": 0,
+        "max_output_tokens": 8192,
+    },
+    {
+        "temperature": 0.75,
+        "top_p": 0.95,
+        "top_k": 0,
+        "max_output_tokens": 8192,
+    },
+    {
+        "temperature": 1,
+        "top_p": 0.95,
+        "top_k": 0,
+        "max_output_tokens": 8192,
+    },
+]
 
 safety_settings = [
     {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
@@ -36,8 +52,29 @@ model = genai.GenerativeModel(
 )
 
 
+def embedFunction(temperatura, resposta):
+    return genai.embed_content(
+        model="models/embedding-001",
+        content=resposta,
+        title=temperatura,
+        task_type="RETRIEVAL_DOCUMENT",
+    )["embedding"]
+
+
+def consultarMelhorResposta(consulta, base):
+    embeddingConsulta = genai.embed_content(
+        model="models/embedding-001", content=consulta, task_type="RETRIEVAL_QUERY"
+    )["embedding"]
+
+    produtosEscalares = np.dot(np.stack(base), embeddingConsulta)
+
+    indice = np.argmax(produtosEscalares)
+
+    return df.iloc[indice]["resposta"]
+
+
 @app.route("/", methods=["POST"])
-def post_example():
+def post():
     if request.method == "POST":
         # Access POST data from the request
         prompt = request.get_json()["prompt"]
@@ -46,11 +83,36 @@ def post_example():
         # Trying to parse message
         try:
 
-            response = model.generate_content(prompt)
+            responses = []
 
-            print(response.text)
+            for config in configsList:
+                model = genai.GenerativeModel(
+                    model_name="gemini-1.5-pro-latest",
+                    generation_config=config,
+                    safety_settings=safety_settings,
+                )
 
-            return response.text
+                response = model.generate_content(prompt)
+                responses.append(
+                    {
+                        "temperatura": str(config["temperature"]),
+                        "resposta": response.text,
+                    }
+                )
+
+            df = pd.DataFrame(responses)
+
+            print(df)
+
+            df["Embeddings"] = df.apply(
+                lambda row: embedFunction(row["temperatura"], row["resposta"]), axis=1
+            )
+
+            melhorResposta = consultarMelhorResposta(prompt, df["Embeddings"])
+
+            print(melhorResposta)
+
+            return melhorResposta
 
         except Exception as e:
             print("Deu ruim!", e)
