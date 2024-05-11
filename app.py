@@ -8,7 +8,10 @@ app = Flask(__name__)
 CORS(app)
 
 # Set up API key
-genai.configure(api_key="AIzaSyAyfqUTrf_KHHeys65z8am7xCZmkcYhet4")
+with open('api_key.txt', "r") as f:
+    api_key = f.read().strip()
+    
+genai.configure(api_key=api_key)
 
 # Set up the model
 configsList = [
