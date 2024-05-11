@@ -54,7 +54,7 @@ def post_example():
             return response.text
 
         except Exception as e:
-            print("Deu ruim!")
+            print("Deu ruim!", e)
             return e.with_traceback
 
 
