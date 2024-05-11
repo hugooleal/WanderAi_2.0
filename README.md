@@ -1,3 +1,4 @@
+![](docs/assets/assets/wanderai.png)
 # WanderAI - Gerador de Roteiros de Viagem com Google Gemini
 ## 1. Introdução
 Este repositório contém um script Python que utiliza o poder do modelo de linguagem Google Gemini para gerar roteiros de viagem personalizados. Através de perguntas sobre suas preferências, o script constrói um roteiro detalhado, incluindo sugestões de atividades, restaurantes e dicas de transporte. O script está hosteado no Render e recebe os dados da chamada para o modelo através de um webapp desenvolvido com Flutter, chamado de [WanderAi](https://hugooleal.github.io/WanderAi_2.0/#/)  (o app foi desenhado tendo em mente uma tela full HD, se abrirem pelo celular já adianto que não está com a melhor responsividade 😁).
