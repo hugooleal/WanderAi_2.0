@@ -8,7 +8,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Set up API key
-genai.configure(api_key="AIzaSyACn0ut4jxm-Kp9N5zcuOYQrTRJe6Z6aPQ")
+genai.configure(api_key="AIzaSyAyfqUTrf_KHHeys65z8am7xCZmkcYhet4")
 
 # Set up the model
 configsList = [
@@ -16,19 +16,19 @@ configsList = [
         "temperature": 0.5,
         "top_p": 0.95,
         "top_k": 0,
-        "max_output_tokens": 8192,
+        "max_output_tokens": 4096,
     },
     {
         "temperature": 0.75,
         "top_p": 0.95,
         "top_k": 0,
-        "max_output_tokens": 8192,
+        "max_output_tokens": 4096,
     },
     {
         "temperature": 1,
         "top_p": 0.95,
         "top_k": 0,
-        "max_output_tokens": 8192,
+        "max_output_tokens": 4096,
     },
 ]
 
