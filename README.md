@@ -10,7 +10,7 @@ Instalamos as bibliotecas necessárias através do `requirements.txt`, incluindo
 Após, definimos a chave da API do Google Gemini (api_key), que está guardada secretamente no servidor do Render :shushing_face:.
 Depois disso é hora de definir as configurações do nosso modelo (temperatura, top_p, top_k, max_output_tokens). Nessa etapa, criamos um dicionário contendo 3 configs diferentes cada uma com uma temperatura, sendo elas: 0.5, 0.75 e 1. Mais para frente explico o motivo. Definimos também os parâmetros de segurança para evitar conteúdo inadequado.
 ### 2.3 Coleta de Informações do Usuário:
-Enquanto isso no nosso front-end o usuário vai informar o destino da viagem, período, tipos de atividade que gosta e seu orçamento. Com base nessas informações o front gera o seguinte prompt:
+Enquanto isso no nosso front-end o usuário vai informar o destino da viagem, período, tipos de atividade que gosta e seu orçamento. Com base nessas informações, o front gera um prompt baseado nas melhores práticas aprendidas durante a imersão. O prompt possui o seguinte template:
 ```
 Você agora é um agente de viagens e possui vasta experiência sobre todos os países do mundo. Crie um roteiro de viagens para mim considerando as seguintes informações:
 Destino: [Destino informado]
