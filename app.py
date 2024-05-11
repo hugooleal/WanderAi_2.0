@@ -60,11 +60,11 @@ def consultarMelhorResposta(consulta, base):
         model="models/embedding-001", content=consulta, task_type="RETRIEVAL_QUERY"
     )["embedding"]
 
-    produtosEscalares = np.dot(np.stack(base), embeddingConsulta)
+    produtosEscalares = np.dot(np.stack(base["Embeddings"]), embeddingConsulta)
 
     indice = np.argmax(produtosEscalares)
 
-    return df.iloc[indice]["resposta"]
+    return base.iloc[indice]["resposta"]
 
 
 @app.route("/", methods=["POST"])
@@ -102,7 +102,7 @@ def post():
                 lambda row: embedFunction(row["temperatura"], row["resposta"]), axis=1
             )
 
-            melhorResposta = consultarMelhorResposta(prompt, df["Embeddings"])
+            melhorResposta = consultarMelhorResposta(prompt, df)
 
             print(melhorResposta)
 
