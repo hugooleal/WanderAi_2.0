@@ -1,19 +1,21 @@
+# Importa as bibliotecas necessárias
 from flask import Flask, request
 from flask_cors import CORS
 import google.generativeai as genai
 import pandas as pd
 import numpy as np
 
+# Cria uma instância do flask que será nosso servidor
 app = Flask(__name__)
 CORS(app)
 
-# Set up API key
+# Busca a chave guardada no Render que será o host do nosso servidor e atualiza as configs do genai para utilizar a chave
 with open('api_key.txt', "r") as f:
     api_key = f.read().strip()
-    
+
 genai.configure(api_key=api_key)
 
-# Set up the model
+# Definimos as configurações que serão utilizadas no modelo
 configsList = [
     {
         "temperature": 0.5,
@@ -48,7 +50,7 @@ safety_settings = [
     },
 ]
 
-
+# Função que será responsável por realizar o embed das respostas
 def embedFunction(temperatura, resposta):
     return genai.embed_content(
         model="models/embedding-001",
@@ -57,7 +59,7 @@ def embedFunction(temperatura, resposta):
         task_type="RETRIEVAL_DOCUMENT",
     )["embedding"]
 
-
+# Função que será responsável por realizar o embed da consulta e definir qual a resposta com o produto escalar mais próxima
 def consultarMelhorResposta(consulta, base):
     embeddingConsulta = genai.embed_content(
         model="models/embedding-001", content=consulta, task_type="RETRIEVAL_QUERY"
@@ -69,15 +71,15 @@ def consultarMelhorResposta(consulta, base):
 
     return base.iloc[indice]["resposta"]
 
-
+# Define a lógica que ocorrerá quando o servidor receber a consulta
 @app.route("/", methods=["POST"])
 def post():
     if request.method == "POST":
-        # Access POST data from the request
+        # Acessa o prompt recebido na consulta
         prompt = request.get_json()["prompt"]
         print("Prompt:", f"{prompt}")
 
-        # Trying to parse message
+        # Tenta realizar a lógica de buscar 3 respostas, embeddar as 3 e definir qual a melhor delas com base no prompt recebido. Se der erro, retorna o erro.
         try:
 
             responses = []
